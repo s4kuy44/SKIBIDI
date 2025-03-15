@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body, .tab, .tab-content, .envelope, .card, .tabs, .message {
+            cursor: url(http://www.rw-designer.com/cursor-extern.php?id=210168), auto; 
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #FFF1CC, #FFCC99, #FF9966);
+            background-size: 300% 300%;
+            animation: gradientBG 10s ease infinite;
+            font-family: 'Pacifico', cursive;
+            overflow: hidden;
+            margin: 0;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+            display: none;
+            width: 80%;
+            max-width: 400px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            background: #ff6699;
+            color: black; 
+            border-radius: 5px;
+        }
+        .tab.active {
+            background: #ff3399;
+            color: black; 
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: black; 
+        }
+        .envelope {
+            position: relative;
+            width: 150px;
+            height: 100px;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: black;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
+        }
+        .envelope .flap {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background: white; 
+            top: 0;
+            left: 0;
+            transform-origin: top;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .envelope .body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white; 
+            top: 0;
+            left: 0;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: black; 
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .chiikawa, .usagi, .hachiware, .yuumi {
+            width: 100px; 
+            margin-top: 20px;
+        }
+        @keyframes fireworks {
+            0% { opacity: 1; transform: scale(0); }
+            100% { opacity: 0; transform: scale(1); }
+        }
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,0,0,1) 100%);
+            border-radius: 50%;
+            animation: fireworks 1s ease-out forwards;
+        }
+        .cake {
+            position: relative;
+            width: 200px;
+            margin: 0 auto;
+            padding-top: 80px; 
+        }
+        .cake-layer {
+            width: 100%;
+            height: 70px;
+            background: #ffcc99;
+            border-radius: 10px;
+            margin-bottom: 15px; 
+            position: relative;
+        }
+        .cake-layer::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            background: #ff9966;
+            top: 0;
+            left: 0;
+            border-radius: 10px 10px 0 0;
+        }
+        .candle {
+            position: absolute;
+            width: 30px;
+            height: 50px;
+            top: -60px;
+            border-radius: 5px;
+        }
+        .candle:nth-child(1) { left: 30%; }
+        .candle:nth-child(2) { left: 60%; }
+        .flame {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255,255,0,1) 0%, rgba(255,0,0,1) 100%);
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            animation: flicker 0.2s infinite;
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        #cake {
+            min-height: 300px; 
+        }
+    </style>
+</head>
+<body>
+    <audio id="birthdayMusic" src="birthday-song.mp3" preload="auto"></audio>
+    <canvas class="confetti" id="confettiCanvas"></canvas>
+    <div id="fireworksContainer"></div>
+    <div class="envelope" onclick="openEnvelope()">
+        <div class="flap"></div>
+        <div class="body">
+            <div>💖</div>
+            <div>press :3</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('card')">Card</div>
+            <div class="tab" onclick="showTab('letter')">Letter</div>
+            <div class="tab" onclick="showTab('cake')">Cake</div>
+        </div>
+        <div id="card" class="tab-content active">
+            <h1>💓 Happy Birthdayyy 💓</h1>
+            <p class="message" id="birthdayMessage">HAPPY BIRTHDAY LUUUUU! love youuu 🫶🏻🫶🏻</p>
+            <img src="chiikawa.gif" alt="chiikawa" class="chiikawa">
+            <img src="usagi.gif" alt="usagi" class="usagi">
+            <img src="hachiware.gif" alt="hachiware" class="hachiware">
+        </div>
+        <div id="letter" class="tab-content">
+            <h1>💓 Birthday Letter 💓</h1>
+            <p class="message">haiii luuu<br><br>happy birthdayyy,im so glad we met you literally are my best friend HAHAHA, thank you for being there for me when i need you and im always gonna be here for you okay. Lets celebrate more bdays tgt<br><br>Love,<br>benn</p>
+            <img src="yuumi.gif" alt="yuumi" class="yuumi">
+        </div>
+        <div id="cake" class="tab-content">
+            <div class="cake">
+                <div class="cake-layer">
+                    <div class="candle">
+                        <svg width="30" height="50" viewBox="0 0 30 50">
+                            <text x="0" y="40" font-size="40" fill="#ff6699">2</text>
+                        </svg>
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle">
+                        <svg width="30" height="50" viewBox="0 0 30 50">
+                            <text x="0" y="40" font-size="40" fill="#ff6699">3</text>
+                        </svg>
+                        <div class="flame"></div>
+                    </div>
+                </div>
+                <div class="cake-layer"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let envelopeOpened = false;
+
+        function openEnvelope() {
+            if (envelopeOpened) return;
+            envelopeOpened = true;
+
+            gsap.to(".envelope .flap", { rotationX: 180, duration: 0.5, ease: "power2.inOut" });
+            setTimeout(() => {
+                gsap.to(".envelope", { opacity: 0, scale: 0.5, duration: 0.5, onComplete: () => {
+                    document.querySelector(".envelope").style.display = "none";
+                    document.querySelector(".card").style.display = "block";
+                    gsap.from(".card", { scale: 0.5, opacity: 0, duration: 0.5, ease: "back.out(1.7)" });
+                    revealMessage();
+                }});
+            }, 800);
+            document.getElementById("birthdayMusic").play().catch(error => console.log("Audio playback failed: ", error));
+        }
+
+        function revealMessage() {
+            startConfetti();
+            startFireworks();
+        }
+
+        function startConfetti() {
+            const canvas = document.getElementById("confettiCanvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+            const confettiParticles = [];
+            class Confetti {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = -Math.random() * canvas.height;
+                    this.size = Math.random() * 10 + 5;
+                    this.speedY = Math.random() * 3 + 2;
+                    this.rotation = Math.random() * 360;
+                    this.rotationSpeed = Math.random() * 10 - 5;
+                    this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    this.shape = Math.random() > 0.5 ? 'circle' : 'square'; 
+                    this.gravity = 0.05;
+                    this.wind = Math.random() * 0.1 - 0.05;
+                }
+                update() {
+                    this.y += this.speedY;
+                    this.x += this.wind;
+                    this.speedY += this.gravity;
+                    this.rotation += this.rotationSpeed;
+                    if (this.y > canvas.height) {
+                        this.y = -10;
+                        this.x = Math.random() * canvas.width;
+                        this.speedY = Math.random() * 3 + 2;
+                    }
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate(this.rotation * Math.PI / 180);
+                    if (this.shape === 'circle') {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                    }
+                    ctx.restore();
+                }
+            }
+            for (let i = 0; i < 200; i++) {
+                confettiParticles.push(new Confetti());
+            }
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confettiParticles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function startFireworks() {
+            function createFirework() {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.left = `${Math.random() * 100}vw`;
+                firework.style.top = `${Math.random() * 100}vh`;
+                firework.style.animationDelay = `${Math.random() * 2}s`;
+                document.getElementById('fireworksContainer').appendChild(firework);
+                setTimeout(() => firework.remove(), 1000);
+            }
+            setInterval(createFirework, 500);
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Microphone setup to blow out the candle
+        function setupMicrophone() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const analyser = audioContext.createAnalyser();
+                    const microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    analyser.fftSize = 256;
+                    const bufferLength = analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+
+                    function detectBlow() {
+                        analyser.getByteTimeDomainData(dataArray);
+                        let sum = 0;
+                        for (let i = 0; i < bufferLength; i++) {
+                            sum += Math.abs(dataArray[i] - 128);
+                        }
+                        const average = sum / bufferLength;
+                        if (average > 20) {
+                            document.querySelectorAll('.flame').forEach(flame => flame.style.display = 'none');
+                        }
+                        requestAnimationFrame(detectBlow);
+                    }
+                    detectBlow();
+                })
+                .catch(error => console.log('Microphone access denied:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', setupMicrophone);
+    </script>
+</body>
+</html>
